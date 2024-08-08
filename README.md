@@ -33,12 +33,7 @@ cd Wallpaper-Scraper
 ```
 source venv/bin/activate
 ```
-
-Then install the packages:
-
-```
-pip install requests beautifulsoup4
-```
+This setups up your virtual environment.
 
 ## Configure the Script
 
