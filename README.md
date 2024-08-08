@@ -50,7 +50,7 @@ The downloadPath variable is set to `~/pictures/wallpapers` by default. Change i
 ## Run the Script
 
 ```
-python scrape_images.py
+python scraper.py
 ```
 This will start scraping images based on the search query and save them to the specified directory.
 
