@@ -21,14 +21,14 @@ pip install requests beautifulsoup4
 ```
 
 ## Usage
-# Clone the Repository
+### Clone the Repository
 
 ```
 git clone https://github.com/zedaes/Wallpaper-Scraper.git
 cd Wallpaper-Scraper
 ```
 
-# Optional (Virtual Environment)
+### Optional (Virtual Environment)
 
 This is **recommended** if you don't want any problems with packages.
 
@@ -36,30 +36,32 @@ This is **recommended** if you don't want any problems with packages.
 python3 -m venv venv
 source venv/bin/activate
 ```
+Then install the packages, whether or no you are using a virtual environment:
+```
+pip install requests beautifulsoup4
+```
 
-Now install the packages in the virtual environment.
-
-# Configure the Script
+## Configure the Script
 
 Open the script file `scraper.py` and set the `searchQuery` variable to your desired search term.
 Adjust the numberOfPages variable if you want to scrape more or fewer pages.
 The downloadPath variable is set to `~/pictures/wallpapers` by default. Change it to your preferred directory if needed.
 
-# Run the Script
+## Run the Script
 
 ```
 python scrape_images.py
 ```
 This will start scraping images based on the search query and save them to the specified directory.
 
-# Code Overview
+## Code Overview
 
 Configuration: Set your search query, number of pages, and download path.
 Fetching Pages: Loops through the specified number of pages and fetches HTML content.
 Parsing HTML: Uses BeautifulSoup to find image tags with the data-src attribute.
 Downloading Images: Extracts image URLs and downloads them to the specified directory.
 
-# Example
+## Example
 
 To scrape images of "neon city" from the first 4 pages of search results and save them to `~/pictures/wallpapers`, you can use the following script:
 
@@ -111,8 +113,8 @@ for page in range(numberOfPages):
 print('Finished downloading images.')
 ```
 
-Contributing
+## Contributing
 Feel free to fork the repository and submit pull requests. Any contributions are welcome!
 
-Contact
+## Contact
 For any questions or feedback, please open an issue on GitHub.
