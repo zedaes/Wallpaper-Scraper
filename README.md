@@ -44,8 +44,8 @@ pip install requests beautifulsoup4
 ## Configure the Script
 
 Open the script file `scraper.py` and set the `searchQuery` variable to your desired search term.
-Adjust the numberOfPages variable if you want to scrape more or fewer pages.
-The downloadPath variable is set to `~/pictures/wallpapers` by default. Change it to your preferred directory if needed.
+Adjust the `numberOfImagesToDownload` variable if you want to scrape more or fewer pages.
+The `downloadPath` variable is set to `~/pictures/wallpapers` by default. Change it to your preferred directory if needed.
 
 ## Run the Script
 
@@ -63,7 +63,7 @@ Downloading Images: Extracts image URLs and downloads them to the specified dire
 
 ## Example
 
-To scrape images of "neon city" from the first 4 pages of search results and save them to `~/pictures/wallpapers`, you can use the following script:
+To scrape the first 20 images of "neon city" and save them to `~/pictures/wallpapers`, you can use the following script:
 
 ```
 import requests
@@ -71,31 +71,37 @@ from bs4 import BeautifulSoup
 import os
 import re
 
-# Configuration
-searchQuery = 'neon%20city'  # Your search query
-numberOfPages = 4  # Number of pages to scrape
-downloadPath = os.path.expanduser('~/pictures/wallpapers')  # Path to save images
+searchQuery = 'neon city'
+searchQuery = searchQuery.replace(' ', '%20')
+numberOfImagesToDownload = 20
+downloadPath = os.path.expanduser('~/pictures/wallpapers')
+numberOfImagesDownloaded = 0
 
-# Create the download folder if it doesn't exist
 if not os.path.exists(downloadPath):
     os.makedirs(downloadPath)
 
-# Regex to extract image URLs
 imageUrlPattern = re.compile(r'(https?:\/\/[^\s]+)')
 
-# Fetch images from multiple pages
-for page in range(numberOfPages):
-    url = f'https://wallhaven.cc/search?q={searchQuery}&page={page+1}' 
+print(f'You are searching for "{searchQuery}".')
+
+page = 1
+while numberOfImagesDownloaded < numberOfImagesToDownload:
+    url = f'https://wallhaven.cc/search?q={searchQuery}&page={page}' 
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
+
+    imageTags = soup.find_all('img', {'data-src': True})
     
-    # Find image URLs
-    imageTags = soup.find_all('img', {'data-src': True})  # Wallhaven uses 'data-src' for lazy-loaded images
+    if not imageTags:
+        print('No more images found. Exiting.')
+        break
 
     for image in imageTags:
+        if numberOfImagesDownloaded >= numberOfImagesToDownload:
+            break
+
         imageUrl = image.get('data-src')
         if imageUrl:
-            # Find the image URL from 'data-src'
             imageUrlMatch = imageUrlPattern.search(imageUrl)
             if imageUrlMatch:
                 imageUrl = imageUrlMatch.group(0)
@@ -103,14 +109,17 @@ for page in range(numberOfPages):
                     imageName = os.path.join(downloadPath, imageUrl.split('/')[-1])
                     imageResponse = requests.get(imageUrl, stream=True)
                     
-                    # Save image
                     with open(imageName, 'wb') as file:
                         for chunk in imageResponse.iter_content(chunk_size=8192):
                             file.write(chunk)
 
-                    print(f'Downloaded: {imageName}')
+                    print(f'Downloaded: {imageName} from {url}')
+                    numberOfImagesDownloaded += 1
 
-print('Finished downloading images.')
+    page += 1
+
+print(f'Finished downloading {numberOfImagesDownloaded} images.')
+
 ```
 
 ## Contributing
