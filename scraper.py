@@ -4,26 +4,34 @@ import os
 import re
 
 searchQuery = 'neon city'
-searchQuery.replace(' ', '%20')
-numberOfPages = 10
+searchQuery = searchQuery.replace(' ', '%20')
+numberOfImagesToDownload = 20
 downloadPath = os.path.expanduser('~/pictures/wallpapers')
-numberOfImages = 0
+numberOfImagesDownloaded = 0
 
 if not os.path.exists(downloadPath):
     os.makedirs(downloadPath)
 
 imageUrlPattern = re.compile(r'(https?:\/\/[^\s]+)')
 
-print(f'You are searching for {searchQuery}.')
+print(f'You are searching for "{searchQuery}".')
 
-for page in range(numberOfPages):
-    url = f'https://wallhaven.cc/search?q={searchQuery}&page={page+1}' 
+page = 1
+while numberOfImagesDownloaded < numberOfImagesToDownload:
+    url = f'https://wallhaven.cc/search?q={searchQuery}&page={page}' 
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
 
     imageTags = soup.find_all('img', {'data-src': True})
+    
+    if not imageTags:
+        print('No more images found. Exiting.')
+        break
 
     for image in imageTags:
+        if numberOfImagesDownloaded >= numberOfImagesToDownload:
+            break
+
         imageUrl = image.get('data-src')
         if imageUrl:
             imageUrlMatch = imageUrlPattern.search(imageUrl)
@@ -38,7 +46,8 @@ for page in range(numberOfPages):
                             file.write(chunk)
 
                     print(f'Downloaded: {imageName} from {url}')
-                    numberOfImages += 1
+                    numberOfImagesDownloaded += 1
 
+    page += 1
 
-print(f'Finished downloading {numberOfImages} images.')
+print(f'Finished downloading {numberOfImagesDownloaded} images.')
