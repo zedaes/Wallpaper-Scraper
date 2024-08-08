@@ -28,15 +28,13 @@ git clone https://github.com/zedaes/Wallpaper-Scraper.git
 cd Wallpaper-Scraper
 ```
 
-### Optional (Virtual Environment)
+### Setup Virtual Environment
 
-This is **recommended** if you don't want any problems with packages.
 
-```
 python3 -m venv venv
 source venv/bin/activate
 ```
-Then install the packages, whether or no you are using a virtual environment:
+Then install the packages:
 ```
 pip install requests beautifulsoup4
 ```
